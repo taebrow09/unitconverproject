@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>unit converter</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<style>
+
+body{
+    font-family: "Comic Sans MS", Arial;
+    background: linear-gradient(135deg, #f3f4f6, #dbeafe);
+    background-attachment: fixed;
+    min-height: 100vh;
+    text-align:center;
+    margin:0;
+}
+
+.container{
+    background:white;
+    width:90%;
+    max-width:420px;
+    margin:auto;
+    margin-top:40px;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 6px 20px rgba(0,0,0,.15);
+}
+
+h1{
+    color:#1f2933;
+}
+
+.subtitle{
+    color:#6b7280;
+    font-size:14px;
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-top:10px;
+    color:#374151;
+    font-weight:bold;
+}
+
+input, select{
+    width:90%;
+    padding:10px;
+    margin:6px;
+    border-radius:12px;
+    border:2px solid #d1d5db;
+    font-size:16px;
+}
+
+button{
+    background:#3b82f6;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:15px;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+button:hover{
+    background:#2563eb;
+}
+
+#result{
+    margin-top:20px;
+    font-size:20px;
+    color:#111827;
+    font-weight:bold;
+}
+
+.footer{
+    margin-top:20px;
+    font-size:13px;
+    color:#6b7280;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>unit converter</h1>
+
+<p class="subtitle">
+enter a value, choose the starting unit, and select what you want to convert it into!
+</p>
+
+<!-- label 1 -->
+<label>conversion type</label>
+<select id="category">
+<option value="length">length </option>
+<option value="weight">weight </option>
+<option value="temperature">temperature ️</option>
+</select>
+
+<!-- label 2 -->
+<label>enter value</label>
+<input type="number" id="inputValue" placeholder="enter value to convert">
+
+<!-- label 3 (3rd box) -->
+<label>convert from</label>
+<select id="fromUnit"></select>
+
+<!-- label 4 (4th box) -->
+<label>convert to</label>
+<select id="toUnit"></select>
+
+<button id="convertBtn">convert </button>
+
+<div id="result">your result will appear here.</div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+
+let units = {
+    length: ["meters","kilometers","feet","miles"],
+    weight: ["grams","kilograms","pounds"],
+    temperature: ["celsius","fahrenheit"]
+};
+
+function updateUnits() {
+    let category = $("#category").val();
+
+    $("#fromUnit").html("");
+    $("#toUnit").html("");
+
+    let unitList = units[category];
+
+    for (let i = 0; i < unitList.length; i++) {
+        let unit = unitList[i];
+        $("#fromUnit").append("<option>" + unit + "</option>");
+        $("#toUnit").append("<option>" + unit + "</option>");
+    }
+}
+
+updateUnits();
+
+$("#category").change(function() {
+    updateUnits();
+});
+
+$("#convertBtn").click(function() {
+
+    let value = parseFloat($("#inputValue").val());
+    let from = $("#fromUnit").val();
+    let to = $("#toUnit").val();
+    let category = $("#category").val();
+    let result = 0;
+
+    if (isNaN(value)) {
+        $("#result").text("please enter a number!");
+        return;
+    }
+
+// length
+    if (category == "length") {
+
+        if (from == "kilometers") {
+            value = value * 1000;
+        }
+        if (from == "feet") {
+            value = value * 0.3048;
+        }
+        if (from == "miles") {
+            value = value * 1609.34;
+        }
+
+        if (to == "kilometers") {
+            result = value / 1000;
+        }
+        else if (to == "feet") {
+            result = value / 0.3048;
+        }
+        else if (to == "miles") {
+            result = value / 1609.34;
+        }
+        else {
+            result = value;
+        }
+    }
+
+// weight
+    if (category == "weight") {
+
+        if (from == "kilograms") {
+            value = value * 1000;
+        }
+        if (from == "pounds") {
+            value = value * 453.592;
+        }
+
+        if (to == "kilograms") {
+            result = value / 1000;
+        }
+        else if (to == "pounds") {
+            result = value / 453.592;
+        }
+        else {
+            result = value;
+        }
+    }
+
+// temperature
+    if (category == "temperature") {
+
+        if (from == "celsius" && to == "fahrenheit") {
+            result = (value * 9/5) + 32;
+        }
+        else if (from == "fahrenheit" && to == "celsius") {
+            result = (value - 32) * 5/9;
+        }
+        else {
+            result = value;
+        }
+    }
+
+    $("#result").text("Result: " + result.toFixed(2));
+});
+
+</script>
